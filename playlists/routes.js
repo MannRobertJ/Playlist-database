@@ -44,7 +44,7 @@ router.get("/playlists/:id", (req, res, next) => {
   const getPlaylist = (id, userId) => {
     Playlist.findOne({ userId: userId, id: id })
       .then(playlist => {
-        if (!playlist && playlist.userId !== userId) {
+        if (!playlist) {
           return res.status(404).send({ message: `Playlist does not exist` });
         }
         return res.send(playlist);
