@@ -78,7 +78,7 @@ router.put("/playlists/:playlistId/songs/:songId", (req, res, next) => {
       .then(playlist => {
         if (
           !playlist ||
-          playlist.id !== song.playlistId ||
+          playlistId !== song.playlistId ||
           playlist.userId !== userId
         ) {
           return res.status(404).send({
@@ -158,6 +158,48 @@ router.delete("/playlists/:playlistId/songs/:songId", (req, res, next) => {
     try {
       const data = toData(auth[1]);
       findSong(Number(data.userId), req.params.playlistId, req.params.songId);
+    } catch (error) {
+      res.status(400).send({
+        Error: `Error ${error.name}: ${error.message}`
+      });
+    }
+  } else {
+    res.status(401).send({
+      message: "Please supply some valid credentials"
+    });
+  }
+});
+
+router.get("/artists", (req, res, next) => {
+  const auth =
+    req.headers.authorization && req.headers.authorization.split(" ");
+
+  const giveArtistsWithSongs = songs => {
+    const artists = songs.reduce((acc, song) => {
+      if (Object.keys(acc).includes(song.artist)) {
+        return { ...acc, [song.artist]: [...acc[song.artist], song] };
+      }
+      return { ...acc, [song.artist]: [song] };
+    }, {});
+    return res.send(artists);
+  };
+
+  const findSongs = playlistId => {
+    Song.findAll({ playlistId: playlistId }).then(songs => {
+      return giveArtistsWithSongs(songs);
+    });
+  };
+
+  const findPlaylists = userId => {
+    Playlist.findAll({ userId: userId }).then(playlists => {
+      return playlists.map(playlist => findSongs(playlist.id));
+    });
+  };
+
+  if (auth && auth[0] === "Bearer" && auth[1]) {
+    try {
+      const data = toData(auth[1]);
+      findPlaylists(Number(data.userId));
     } catch (error) {
       res.status(400).send({
         Error: `Error ${error.name}: ${error.message}`
