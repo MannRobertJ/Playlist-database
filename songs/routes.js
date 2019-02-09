@@ -19,7 +19,6 @@ router.post("/playlists/:id/songs", (req, res, next) => {
         }
         Song.create({ ...req.body, playlistId: playlistId })
           .then(song => {
-            return res.status(201).send(song);
             if (!song) {
               return res.status(404).send({
                 message: `Song does not exist`
