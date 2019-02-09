@@ -1,10 +1,12 @@
 const { Router } = require("express");
 const Song = require("./model");
 const Playlist = require("../playlists/model");
-
+const toData = require("../auth/jwt");
 const router = new Router();
 
 router.get("/songs", (req, res, next) => {
+  const auth =
+    req.headers.authorization && req.headers.authorization.split(" ");
   const limit = req.query.limit || 25;
   const offset = req.query.offset || 0;
 
@@ -19,6 +21,9 @@ router.get("/songs", (req, res, next) => {
 });
 
 router.get("/songs/:id", (req, res, next) => {
+  const auth =
+    req.headers.authorization && req.headers.authorization.split(" ");
+
   Song.findById(req.params.id, { include: [Playlist] })
     .then(song => {
       if (!song) {
@@ -32,6 +37,9 @@ router.get("/songs/:id", (req, res, next) => {
 });
 
 router.post("/playlists/:id/songs", (req, res, next) => {
+  const auth =
+    req.headers.authorization && req.headers.authorization.split(" ");
+
   Playlist.findById(req.params.id)
     .then(playlist => {
       if (!playlist) {

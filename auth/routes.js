@@ -34,6 +34,7 @@ router.post("/logins", (req, res, next) => {
     });
 });
 
+// Not part of assignment but helpful reference for implementing authorisation.
 router.get("/secret-endpoint", (req, res) => {
   const auth =
     req.headers.authorization && req.headers.authorization.split(" ");
