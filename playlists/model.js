@@ -4,7 +4,7 @@ const sequelize = require("../db");
 const Playlist = sequelize.define(
   "playlist",
   {
-    name: Sequelize.TEXT
+    name: Sequelize.STRING(255)
   },
   { tableName: "playlists" }
 );
