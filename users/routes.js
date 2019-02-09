@@ -7,7 +7,7 @@ const router = new Router();
 router.get("/users", (req, res, next) => {
   User.findAll()
     .then(users => {
-      res.send({ users });
+      res.status(201).send({ users });
     })
     .catch(error => next(error));
 });

@@ -19,7 +19,7 @@ router.post("/playlists/:id/songs", (req, res, next) => {
         }
         Song.create({ ...req.body, playlistId: playlistId })
           .then(song => {
-            return res.send(song);
+            return res.status(201).send(song);
             if (!song) {
               return res.status(404).send({
                 message: `Song does not exist`
@@ -59,7 +59,7 @@ router.put("/playlists/:playlistId/songs/:songId", (req, res, next) => {
   const moveSongToNewPlaylist = (song, playlist) => {
     return song
       .update(req.body)
-      .then(song => res.send({ message: `Song edited` }));
+      .then(song => res.status(200).send({ message: `Song edited` }));
   };
 
   const findNewPlayList = (userId, playlist, song, newPlaylistId) => {
@@ -141,7 +141,9 @@ router.delete("/playlists/:playlistId/songs/:songId", (req, res, next) => {
           message: `Song does not exist`
         });
       }
-      song.destroy().then(() => res.send({ message: `Song was destroyed` }));
+      song
+        .destroy()
+        .then(() => res.status(200).send({ message: `Song was destroyed` }));
     });
   };
 
@@ -181,7 +183,7 @@ router.get("/artists", (req, res, next) => {
       }
       return { ...acc, [song.artist]: [song] };
     }, {});
-    return res.send(artists);
+    return res.stauts(200).send(artists);
   };
 
   const findSongs = playlistId => {
