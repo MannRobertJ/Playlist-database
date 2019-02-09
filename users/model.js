@@ -7,7 +7,7 @@ const User = sequelize.define(
     email: Sequelize.TEXT,
     password: Sequelize.TEXT
   },
-  { tableName: "customers" }
+  { tableName: "users" }
 );
 
 module.exports = User;
