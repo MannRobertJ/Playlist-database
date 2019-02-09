@@ -131,29 +131,33 @@ router.delete("/playlists/:playlistId/songs/:songId", (req, res, next) => {
     req.headers.authorization && req.headers.authorization.split(" ");
 
   const deleteSong = (userId, playlistId, song) => {
-    Playlist.findOne({ userId: userId, id: playlistId }).then(playlist => {
-      if (
-        !playlist ||
-        playlist.id !== song.playlistId ||
-        playlist.userId !== userId
-      ) {
-        return res.status(404).send({
-          message: `Song does not exist`
-        });
-      }
-      song
-        .destroy()
-        .then(() => res.status(200).send({ message: `Song was destroyed` }));
-    });
+    Playlist.findOne({ userId: userId, id: playlistId })
+      .then(playlist => {
+        if (
+          !playlist ||
+          playlist.id !== song.playlistId ||
+          playlist.userId !== userId
+        ) {
+          return res.status(404).send({
+            message: `Song does not exist`
+          });
+        }
+        song
+          .destroy()
+          .then(() => res.status(200).send({ message: `Song was destroyed` }));
+      })
+      .catch(error => next(error));
   };
 
   const findSong = (userId, playlistId, songId) => {
-    Song.findOne({ id: songId, playlistId: playlistId }).then(song => {
-      if (!song) {
-        return res.status(404).send({ message: `Song does not exist` });
-      }
-      deleteSong(userId, playlistId, song);
-    });
+    Song.findOne({ id: songId, playlistId: playlistId })
+      .then(song => {
+        if (!song) {
+          return res.status(404).send({ message: `Song does not exist` });
+        }
+        deleteSong(userId, playlistId, song);
+      })
+      .catch(error => next(error));
   };
 
   if (auth && auth[0] === "Bearer" && auth[1]) {
@@ -187,15 +191,19 @@ router.get("/artists", (req, res, next) => {
   };
 
   const findSongs = playlistId => {
-    Song.findAll({ playlistId: playlistId }).then(songs => {
-      return giveArtistsWithSongs(songs);
-    });
+    Song.findAll({ playlistId: playlistId })
+      .then(songs => {
+        return giveArtistsWithSongs(songs);
+      })
+      .catch(error => next(error));
   };
 
   const findPlaylists = userId => {
-    Playlist.findAll({ userId: userId }).then(playlists => {
-      return playlists.map(playlist => findSongs(playlist.id));
-    });
+    Playlist.findAll({ userId: userId })
+      .then(playlists => {
+        return playlists.map(playlist => findSongs(playlist.id));
+      })
+      .catch(error => next(error));
   };
 
   if (auth && auth[0] === "Bearer" && auth[1]) {

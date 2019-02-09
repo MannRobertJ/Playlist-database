@@ -5,7 +5,7 @@ const router = new Router();
 const bcrypt = require("bcrypt");
 const { toJWT, toData } = require("./jwt");
 
-router.post("/logins", (req, res) => {
+router.post("/logins", (req, res, next) => {
   User.findOne({
     where: {
       email: req.body.email
@@ -32,7 +32,8 @@ router.post("/logins", (req, res) => {
       res.status(500).send({
         message: "Something went wrong"
       });
-    });
+    })
+    .catch(error => next(error));
 });
 
 // When I try to implement the middleware as explained in the reader it breaks.
