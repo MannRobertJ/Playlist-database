@@ -5,17 +5,6 @@ const bcrypt = require("bcrypt");
 const router = new Router();
 
 router.get("/users", (req, res, next) => {
-  if (
-    !email ||
-    !password ||
-    !!password_confirmation ||
-    password !== password_confirmation
-  ) {
-    return res
-      .status(400)
-      .send("Please enter valid email and matching passwords");
-  }
-
   User.findAll()
     .then(users => {
       res.status(201).send({ users });
@@ -24,6 +13,16 @@ router.get("/users", (req, res, next) => {
 });
 
 router.post("/users", (req, res, next) => {
+  if (
+    !req.body.email ||
+    !req.body.password ||
+    !req.body.password_confirmation ||
+    req.body.password !== req.body.password_confirmation
+  ) {
+    return res
+      .status(400)
+      .send("Please enter valid email and matching passwords");
+  }
   User.create({ ...req.body, password: bcrypt.hashSync(req.body.password, 10) })
     .then(user => {
       if (!user) {
