@@ -1,16 +1,16 @@
 const { Router } = require("express");
-const User = require("./model");
+const Song = require("./model");
 
 const router = new Router();
 
-router.get("/users", (req, res, next) => {
+router.get("/songs", (req, res, next) => {
   const limit = req.query.limit || 25;
   const offset = req.query.offset || 0;
 
-  Promise.all([User.count(), User.findAll({ limit, offset })])
-    .then(([total, users]) => {
+  Promise.all([Song.count(), Song.findAll({ limit, offset })])
+    .then(([total, songs]) => {
       res.send({
-        users,
+        songs,
         total
       });
     })

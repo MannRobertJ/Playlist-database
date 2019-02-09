@@ -1,13 +1,14 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../db");
 
-const User = sequelize.define(
-  "user",
+const Song = sequelize.define(
+  "song",
   {
-    email: Sequelize.TEXT,
-    password: Sequelize.TEXT
+    title: Sequelize.TEXT,
+    artist: Sequelize.TEXT,
+    album: Sequelize.TEXT
   },
-  { tableName: "customers" }
+  { tableName: "songs" }
 );
 
-module.exports = User;
+module.exports = Song;
