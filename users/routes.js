@@ -1,18 +1,26 @@
 const { Router } = require("express");
 const User = require("./model");
+const bcrypt = require("bcrypt");
 
 const router = new Router();
 
 router.get("/users", (req, res, next) => {
-  const limit = req.query.limit || 25;
-  const offset = req.query.offset || 0;
+  User.findAll()
+    .then(users => {
+      res.send({ users });
+    })
+    .catch(error => next(error));
+});
 
-  Promise.all([User.count(), User.findAll({ limit, offset })])
-    .then(([total, users]) => {
-      res.send({
-        users,
-        total
-      });
+router.post("/users", (req, res, next) => {
+  User.create({ ...req.body, password: bcrypt.hashSync(req.body.password, 10) })
+    .then(user => {
+      if (!user) {
+        return res.status(404).send({
+          message: `User does not exist`
+        });
+      }
+      return res.status(201).send(user);
     })
     .catch(error => next(error));
 });
