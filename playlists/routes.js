@@ -14,7 +14,7 @@ router.get("/playlists", (req, res, next) => {
   const getPlaylistsByUserId = userId => {
     Playlist.findAll({ where: { userId: userId } })
       .then(playlists => {
-        return res.send({
+        return res.status(200).send({
           message: playlists
         });
       })
@@ -47,7 +47,7 @@ router.get("/playlists/:id", (req, res, next) => {
         if (!playlist) {
           return res.status(404).send({ message: `Playlist does not exist` });
         }
-        return res.send(playlist);
+        return res.status(200).send(playlist);
       })
       .catch(error => next(error));
   };
@@ -113,7 +113,9 @@ router.delete("/playlists/:id", (req, res, next) => {
         }
         return playlist
           .destroy()
-          .then(() => res.send({ message: `Playlist was destroyed` }));
+          .then(() =>
+            res.status(200).send({ message: `Playlist was destroyed` })
+          );
       })
       .catch(error => next(error));
   };
