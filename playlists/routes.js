@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const Playlist = require("./model");
-
+const User = require("../users/model");
 const router = new Router();
 
 router.get("/playlists", (req, res, next) => {
@@ -18,7 +18,7 @@ router.get("/playlists", (req, res, next) => {
 });
 
 router.get("/playlists/:id", (req, res, next) => {
-  Playlist.findById(req.params.id)
+  Playlist.findById(req.params.id, { include: User })
     .then(playlist => {
       if (!playlist) {
         return res.status(404).send({ message: `Playlist does not exist` });
