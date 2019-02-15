@@ -5,7 +5,7 @@ const router = new Router();
 const bcrypt = require("bcrypt");
 const { toJWT, toData } = require("./jwt");
 
-router.post("/logins", (req, res, next) => {
+router.post("/tokens", (req, res, next) => {
   User.findOne({
     where: {
       email: req.body.email
@@ -19,7 +19,7 @@ router.post("/logins", (req, res, next) => {
       }
       if (bcrypt.compareSync(req.body.password, entity.password)) {
         res.send({
-          jwt: toJWT({ userId: entity.id })
+          token: toJWT({ userId: entity.id })
         });
       } else {
         res.status(400).send({
