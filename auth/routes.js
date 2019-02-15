@@ -19,7 +19,7 @@ router.post("/logins", (req, res, next) => {
       }
       if (bcrypt.compareSync(req.body.password, entity.password)) {
         res.send({
-          jwt: toJWT({ userId: entity.id })
+          token: toJWT({ userId: entity.id })
         });
       } else {
         res.status(400).send({
